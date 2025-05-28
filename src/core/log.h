@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <any>
+#include <cstdint>
 
 #if (defined(LINUX) || defined(__linux__))
 #include <signal.h>

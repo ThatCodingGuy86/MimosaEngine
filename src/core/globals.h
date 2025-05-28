@@ -1,5 +1,6 @@
 #pragma once
 #include "log.h"
+#include <cstdint>
 
 namespace math { struct vec2; };
 
