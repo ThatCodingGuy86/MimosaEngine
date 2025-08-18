@@ -9,6 +9,9 @@ namespace scene
 	public:
 		math::vec2 pos;
 		math::vec2 dim;
+
+		//! @brief Default constructor
+		UINode() {};
 		
 		//! @brief UI node constructor
 		UINode(std::string name, std::shared_ptr<Node> parent);

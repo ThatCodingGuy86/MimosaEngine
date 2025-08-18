@@ -14,7 +14,10 @@ namespace scene
 	class Node : public std::enable_shared_from_this<Node>
 	{
 	public:
-		
+		//! @brief Default constructor
+		Node() {};
+
+		//! @brief Node constructor
 		Node(std::string name, std::shared_ptr<Node> parent);
 
 		/*!
