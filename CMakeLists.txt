@@ -59,6 +59,10 @@ set(Source_Files
     "src/ui/types/text_box.cpp"
     "src/ui/ui_manager.cpp"
     "src/vendor/glad/glad.c"
+    "src/networking/steam/detail/lobby.cpp"
+    "src/networking/steam/detail/steam_manager.cpp"
+    "src/networking/steam/detail/steam_net.cpp"
+    "src/networking/detail/utils.cpp"
 )
 source_group("Source Files" FILES ${Source_Files})
 
