@@ -6,24 +6,49 @@ namespace scene {
 	{
 		this->name = name;
 		this->parent = parent;
+		this->type = Type_Node;
 	}
 
 	void Node::Update(double delta)
 	{
+		for (auto& child : children)
+		{
+			if (!child)
+			{
+				logger.err("Tried to update a child UI node that doesn't exist! Scene tree is likely corrupted!");
+                continue;
+			}
+
+			child->Update(delta);
+		}
+
 		if (updateFunc)
-			updateFunc(std::make_shared<Node>(*this), delta);
+			updateFunc(this->shared_from_this(), delta);
 	}
 
 	void Node::PhysUpdate(double delta)
 	{
+		for (auto& child : children)
+		{
+			if (!child)
+			{
+				logger.err("Tried to update a child UI node that doesn't exist! Scene tree is likely corrupted!");
+                continue;
+			}
+
+			child->PhysUpdate(delta);
+		}
+
 		if (physUpdateFunc)
-			physUpdateFunc(std::make_shared<Node>(*this), delta);
+			physUpdateFunc(this->shared_from_this(), delta);
 	}
 
 	size_t Node::AddChild(std::shared_ptr<Node> child)
 	{
 		size_t index = children.size();
 		children.push_back(child);
+
+		child->SetParent(this->shared_from_this());
 
 		if (this->isRoot || this->isInSceneTree)
 			child->UpdateIsInSceneTree(true);
@@ -36,12 +61,26 @@ namespace scene {
 		children.erase(children.begin() + child, children.begin() + child);
 	}
 
+	void Node::MoveChild(size_t childIndex, std::shared_ptr<Node> newParent)
+	{
+		if (childIndex >= children.size())
+		{
+			logger.warn("Tried to move a child whose index is out of range");
+			return;
+		}
+
+		std::shared_ptr<Node> child = children[childIndex];
+
+		newParent->AddChild(child);
+		this->RemoveChild(childIndex);
+	}
+
 	std::shared_ptr<Node> Node::FindNode(NodePath& path)
 	{
-		// Can't find a node that isn't a decendant of this node
+		// Can't find a node that isn't a descendant of this node
 		if (path.GetOrigin().get() != this)
 		{
-			logger.warn("Couldn't find node " + path.GetConcatenatedPath() + " because it is not a decendant of this node");
+			logger.warn("Couldn't find node " + path.GetConcatenatedPath() + " because it is not a descendant of this node");
 			return nullptr;
 		}
 
@@ -141,7 +180,7 @@ namespace scene {
 		if (!hasBeenInitalized && newValue == true)
 		{
 			if (initFunc)
-				initFunc(std::make_shared<Node>(*this));
+				initFunc(this->shared_from_this());
 
 			hasBeenInitalized = true;
 		}

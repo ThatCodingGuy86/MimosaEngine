@@ -17,8 +17,16 @@ namespace scene
 		
 		Node(std::string name, std::shared_ptr<Node> parent);
 
+		/*!
+		 * @brief Runs the update function of this node and all child nodes recursively
+		 * @param delta The delta time value to use
+		 */
 		void Update(double delta);
 
+		/*!
+		 * @brief Runs the physics update function of this node and all child nodes recursively
+		 * @param delta The delta time value to use
+		 */
 		void PhysUpdate(double delta);
 
 		/*!
@@ -27,6 +35,13 @@ namespace scene
 		 * @return The index of the child node
 		 */
 		size_t AddChild(std::shared_ptr<Node> child);
+
+		/*!
+		 * @brief Moves a child of this node to a new parent node
+		 * @param childIndex The child to move
+		 * @param newParent The new parent node
+		 */
+		void MoveChild(size_t childIndex, std::shared_ptr<Node> newParent);
 
 		/*!
 		 * @brief Removes a child from this node
@@ -66,12 +81,17 @@ namespace scene
 
 		std::shared_ptr<Node> GetParent();
 
+		/*!
+		 * @brief Sets the parent of this node, does not update the children of the parent. Call AddChild or MoveChild to add or move a child properly.
+		 * @param newParent The parent node to set
+		 */
 		void SetParent(std::shared_ptr<Node> newParent);
 
+		//! @brief Gets the node type
 		NodeType GetType();
 
 		/*!
-		 * @brief Updates whether this node and its decendants are in the scene tree.
+		 * @brief Updates whether this node and its descendants are in the scene tree.
 		 * May also call the initFunc when applicable.
 		 * @param newValue The new value to update to
 		 */
